@@ -48,7 +48,8 @@ public class Groups extends JFrame {
 		scrollPane.setViewportView(table);
 		
 		// Получение данных из таблицы Students
-				String query = "SELECT group_name AS \"Группа\" FROM public.\"Groups\"";
+				String query = "SELECT group_name AS \"Группа\", sport_name AS \"Дисциплина\" "
+						+ "FROM public.\"Groups\", public.\"Sports\" WHERE public.\"Groups\".\"sport_id\" = public.\"Sports\".\"sport_id\"";
 			    ResultSet rs = db.execute_query(query);
 
 				// Получение метаданных (названия столбцов)

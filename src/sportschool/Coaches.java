@@ -47,7 +47,8 @@ public class Coaches extends JFrame {
 		scrollPane.setViewportView(table);
 		
 		// Получение данных из таблицы Students
-		String query = "SELECT coach_surname AS \"ФИО\", sport_name AS \"Дисциплина\" FROM public.\"Coaches\", public.\"Sports\"";
+		String query = "SELECT coach_surname || ' ' || coach_name AS \"Преподаватель\", sport_name AS \"Дисциплина\" "
+				+ "FROM public.\"Coaches\", public.\"Sports\" WHERE public.\"Coaches\".\"coach_sport_id\" = public.\"Sports\".\"sport_id\"";
 	    ResultSet rs = db.execute_query(query);
 
 		// Получение метаданных (названия столбцов)

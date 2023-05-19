@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
 import java.awt.event.ActionEvent;
 
 public class EnterTimetable extends JFrame {
@@ -25,8 +26,13 @@ public class EnterTimetable extends JFrame {
 	private JButton btnNewButton;
 	/**
 	 * Create the frame.
+	 * @throws Exception 
 	 */
-	public EnterTimetable() {
+	public EnterTimetable() throws Exception {
+		
+		DbFunctions db = new DbFunctions();
+		db.connect_to_db("Sports school", "postgres", db.Return_pass());
+		
 		setTitle("Ввод занятия");
 		setBounds(100, 100, 360, 275);
 		contentPane = new JPanel();
@@ -95,5 +101,21 @@ public class EnterTimetable extends JFrame {
 		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnNewButton.setBounds(152, 202, 89, 23);
 		contentPane.add(btnNewButton);
+		
+		// Подготовка SQL-запроса для вставки новой записи
+        String sql = "INSERT INTO Расписание (Группа, Преподаватель, Зал, Начало, Окончание) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement statement = db.connect_to_db(sql, sql, sql).prepareStatement(sql);
+        statement.setString(1, "group_name");
+        statement.setString(2, "coach_surname");
+        statement.setString(3, "gym_number");
+        statement.setString(4, "start_datetime");
+        statement.setString(5, "end_datetime");
+
+        // Выполнение SQL-запроса
+        statement.executeUpdate();
+
+        // Закрытие ресурсов
+        statement.close();
+     
 	}
 }
