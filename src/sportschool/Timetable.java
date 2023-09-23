@@ -6,13 +6,17 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
+
 
 public class Timetable extends JFrame {
 
@@ -97,6 +101,68 @@ public class Timetable extends JFrame {
 		btnNewButton_2.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnNewButton_2.setBounds(424, 13, 125, 44);
 		contentPane.add(btnNewButton_2);
+		
+		JButton btnNewButton_3 = new JButton("Выгрузка csv");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					DbFunctions db = new DbFunctions();
+					db.connect_to_db("Sports school", "postgres", db.Return_pass());
+					Statement statement = null;
+			        ResultSet resultSet = null;
+		           
+
+		            // Выполнение SQL-запроса для получения данных
+		            String query = "SELECT group_name, coach_surname || ' ' || coach_name, sport_name " +
+		                    "FROM public.\"Groups\", public.\"Coaches\", public.\"Sports\" " +
+		                    "WHERE public.\"Sports\".\"sport_id\" = public.\"Coaches\".\"coach_sport_id\" " +
+		                    "AND public.\"Groups\".\"sport_id\" = public.\"Coaches\".\"coach_sport_id\"";
+		            statement = db.connect_to_db("Sports school", "postgres", db.Return_pass()).createStatement();
+		            resultSet = statement.executeQuery(query);
+
+		            // Создание CSV-файла для записи данных
+		            FileWriter csvFile = new FileWriter("C:\\Users\\User\\Desktop\\exported_data.csv");
+
+		            // Запись заголовков столбцов в CSV
+		            int columnCount = resultSet.getMetaData().getColumnCount();
+		            for (int i = 1; i <= columnCount; i++) {
+		                String columnName = resultSet.getMetaData().getColumnName(i);
+		                csvFile.append(columnName);
+		                if (i < columnCount) {
+		                    csvFile.append(",");
+		                } else {
+		                    csvFile.append("\n");
+		                }
+		            }
+
+		            // Запись данных из результирующего набора в CSV
+		            while (resultSet.next()) {
+		                for (int i = 1; i <= columnCount; i++) {
+		                    String columnValue = resultSet.getString(i);
+		                    csvFile.append(columnValue);
+		                    if (i < columnCount) {
+		                        csvFile.append(",");
+		                    } else {
+		                        csvFile.append("\n");
+		                    }
+		                }
+		            }
+
+		            // Закрытие CSV-файла и ресурсов базы данных
+		            csvFile.close();
+		            resultSet.close();
+		            statement.close();
+		           
+
+		            System.out.println("Данные успешно выгружены в CSV файл.");
+		        } catch (Exception e1) {
+		            e1.printStackTrace();
+		        }
+			}
+		});
+		btnNewButton_3.setFont(new Font("Tahoma", Font.BOLD, 13));
+		btnNewButton_3.setBounds(145, 13, 125, 44);
+		contentPane.add(btnNewButton_3);
 
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
