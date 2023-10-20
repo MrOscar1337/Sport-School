@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,68 +14,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-
 public class Timetable extends JFrame {
 
     private JPanel contentPane;
     private JTable table_1;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    public class XmlExporter {
-
-        public void exportToXml() {
-            try {
-                // Создаем экземпляр TimetableEntry с данными для экспорта
-                TimetableEntry timetableEntry = new TimetableEntry("exampleGroup", "exampleSurname", "exampleName", "exampleSport");
-
-                // Путь к файлу XML
-                String xmlFilePath = "C:\\Users\\User\\Desktop\\exported_data.xml";
-
-                // Создаем новый документ XML
-                DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
-                Document document = documentBuilder.newDocument();
-
-                // Создаем корневой элемент
-                Element rootElement = document.createElement("TimetableEntry");
-                document.appendChild(rootElement);
-
-                // Добавляем элементы данных
-                createElement(document, rootElement, "GroupName", timetableEntry.getGroupName());
-                createElement(document, rootElement, "CoachSurname", timetableEntry.getCoachSurname());
-                createElement(document, rootElement, "CoachName", timetableEntry.getCoachName());
-                createElement(document, rootElement, "Sport", timetableEntry.getSport());
-
-                // Используем Transformer для записи документа в файл
-                TransformerFactory transformerFactory = TransformerFactory.newInstance();
-                Transformer transformer = transformerFactory.newTransformer();
-                DOMSource domSource = new DOMSource(document);
-                StreamResult streamResult = new StreamResult(new File(xmlFilePath));
-
-                transformer.transform(domSource, streamResult);
-
-                System.out.println("Данные успешно выгружены в XML файл.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        private static void createElement(Document document, Element parentElement, String tagName, String textContent) {
-            Element element = document.createElement(tagName);
-            element.appendChild(document.createTextNode(textContent));
-            parentElement.appendChild(element);
-        }
-    }
+    
 
     public Timetable() throws Exception {
         // Создаем планировщик задач
@@ -86,8 +29,10 @@ public class Timetable extends JFrame {
         // Запускаем задачу экспорта в XML каждую минуту
         ScheduledFuture<?> xmlExportHandle = scheduler.scheduleAtFixedRate(() -> {
             try {
-                XmlExporter exporter = new XmlExporter();
-                exporter.exportToXml();
+                XmlExporter exportXML = new XmlExporter();
+                exportXML.exportToXml();
+                JsonExporter exportJSON = new JsonExporter();
+                exportJSON.exportToJson();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -300,35 +245,5 @@ public class Timetable extends JFrame {
             e.printStackTrace();
         }
 
-    }
-
-    public class TimetableEntry {
-        private String groupName;
-        private String coachSurname;
-        private String coachName;
-        private String Sport;
-
-        public TimetableEntry(String groupName, String coachSurname, String coachName, String Sport) {
-            this.groupName = groupName;
-            this.coachSurname = coachSurname;
-            this.coachName = coachName;
-            this.Sport = Sport;
-        }
-
-        public String getGroupName() {
-            return groupName;
-        }
-
-        public String getCoachSurname() {
-            return coachSurname;
-        }
-
-        public String getCoachName() {
-            return coachName;
-        }
-
-        public String getSport() {
-            return Sport;
-        }
     }
 }
