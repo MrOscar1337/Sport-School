@@ -1,0 +1,114 @@
+{"TimetableEntry": {"Sports": [
+  {
+    "Type": "Футбол",
+    "Groups": [
+      {
+        "Coaches": [{
+          "Surname": "Иванов",
+          "Name": "Иван"
+        }],
+        "Name": "Ф-21"
+      },
+      {
+        "Coaches": [{
+          "Surname": "Алексеев",
+          "Name": "Никита"
+        }],
+        "Name": "Ф-21"
+      },
+      {
+        "Coaches": [{
+          "Surname": "Иванов",
+          "Name": "Иван"
+        }],
+        "Name": "Ф-22"
+      },
+      {
+        "Coaches": [{
+          "Surname": "Алексеев",
+          "Name": "Никита"
+        }],
+        "Name": "Ф-22"
+      }
+    ]
+  },
+  {
+    "Type": "Баскетбол",
+    "Groups": [
+      {
+        "Coaches": [{
+          "Surname": "Петров",
+          "Name": "Петр"
+        }],
+        "Name": "Б-21"
+      },
+      {
+        "Coaches": [{
+          "Surname": "Петров",
+          "Name": "Петр"
+        }],
+        "Name": "Б-22"
+      }
+    ]
+  },
+  {
+    "Type": "Волейбол",
+    "Groups": [{
+      "Coaches": [{
+        "Surname": "Щеглов",
+        "Name": "Тимофей"
+      }],
+      "Name": "В-21"
+    }]
+  },
+  {
+    "Type": "Плавание",
+    "Groups": [{
+      "Coaches": [{
+        "Surname": "Голубев",
+        "Name": "Максим"
+      }],
+      "Name": "П-22"
+    }]
+  },
+  {
+    "Type": "Легкая атлетика",
+    "Groups": [{
+      "Coaches": [{
+        "Surname": "Самойлов",
+        "Name": "Дмитрий"
+      }],
+      "Name": "ЛА-21"
+    }]
+  },
+  {
+    "Type": "Гимнастика",
+    "Groups": [{
+      "Coaches": [{
+        "Surname": "Черных",
+        "Name": "Илья"
+      }],
+      "Name": "Г-22"
+    }]
+  },
+  {
+    "Type": "Борьба",
+    "Groups": [{
+      "Coaches": [{
+        "Surname": "Серов",
+        "Name": "Николай"
+      }],
+      "Name": "БРБ-22"
+    }]
+  },
+  {
+    "Type": "Бадминтон",
+    "Groups": [{
+      "Coaches": [{
+        "Surname": "Васильев",
+        "Name": "Владимир"
+      }],
+      "Name": "БН-21"
+    }]
+  }
+]}}

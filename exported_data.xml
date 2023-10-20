@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TimetableEntry>
+	<Sport Type="Футбол">
+		<Group Name="Ф-21">
+			<Coach Name="Иван" Surname="Иванов"/>
+			<Coach Name="Никита" Surname="Алексеев"/>
+		</Group>
+		<Group Name="Ф-22">
+			<Coach Name="Иван" Surname="Иванов"/>
+			<Coach Name="Никита" Surname="Алексеев"/>
+		</Group>
+	</Sport>
+	<Sport Type="Баскетбол">
+		<Group Name="Б-21">
+			<Coach Name="Петр" Surname="Петров"/>
+		</Group>
+		<Group Name="Б-22">
+			<Coach Name="Петр" Surname="Петров"/>
+		</Group>
+	</Sport>
+	<Sport Type="Волейбол">
+		<Group Name="В-21">
+			<Coach Name="Тимофей" Surname="Щеглов"/>
+		</Group>
+	</Sport>
+	<Sport Type="Плавание">
+		<Group Name="П-22">
+			<Coach Name="Максим" Surname="Голубев"/>
+		</Group>
+	</Sport>
+	<Sport Type="Легкая атлетика">
+		<Group Name="ЛА-21">
+			<Coach Name="Дмитрий" Surname="Самойлов"/>
+		</Group>
+	</Sport>
+	<Sport Type="Гимнастика">
+		<Group Name="Г-22">
+			<Coach Name="Илья" Surname="Черных"/>
+		</Group>
+	</Sport>
+	<Sport Type="Борьба">
+		<Group Name="БРБ-22">
+			<Coach Name="Николай" Surname="Серов"/>
+		</Group>
+	</Sport>
+	<Sport Type="Бадминтон">
+		<Group Name="БН-21">
+			<Coach Name="Владимир" Surname="Васильев"/>
+		</Group>
+	</Sport>
+</TimetableEntry>
