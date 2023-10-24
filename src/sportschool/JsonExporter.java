@@ -10,112 +10,142 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class JsonExporter {
-	 public void exportToJson() {
-         try {
-             // Выполняем SQL-запрос и обрабатываем результат
-             String query = "SELECT group_name, coach_surname, coach_name, sport_name " +
-                     "FROM public.\"Groups\", public.\"Coaches\", public.\"Sports\" " +
-                     "WHERE public.\"Sports\".\"sport_id\" = public.\"Coaches\".\"coach_sport_id\" " +
-                     "AND public.\"Groups\".\"sport_id\" = public.\"Coaches\".\"coach_sport_id\"";
 
-             DbFunctions db = new DbFunctions();
+    public void exportToJson() {
+        try {
+            // Выполняем SQL-запрос и обрабатываем результат
+            String query = "SELECT group_name, coach_surname, coach_name, sport_name " +
+                    "FROM public.\"Groups\", public.\"Coaches\", public.\"Sports\" " +
+                    "WHERE public.\"Sports\".\"sport_id\" = public.\"Coaches\".\"coach_sport_id\" " +
+                    "AND public.\"Groups\".\"sport_id\" = public.\"Coaches\".\"coach_sport_id\"";
 
-             try (Connection conn = db.connect_to_db("Sports school", "postgres", db.Return_pass());
-                  Statement statement = conn.createStatement();
-                  ResultSet resultSet = statement.executeQuery(query)) {
+            DbFunctions db = new DbFunctions();
 
-                 // Создаем экземпляр JsonExporter
-                 JsonExporter exporter = new JsonExporter();
+            try (Connection conn = db.connect_to_db("Sports school", "postgres", db.Return_pass());
+                 Statement statement = conn.createStatement();
+                 ResultSet resultSet = statement.executeQuery(query)) {
 
-                 // Вызываем метод exportToJson, передавая результат SQL-запроса
-                 exporter.exportToJson(resultSet);
+                // Создаем экземпляр JsonExporter
+                JsonExporter exporter = new JsonExporter();
 
-                 // Перед тем, как выйти, закрываем соединение с базой данных
-                 conn.close();
-             }
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
-     }
+                // Вызываем метод exportToJson, передавая результат SQL-запроса
+                exporter.exportToJson(resultSet);
 
-     private void exportToJson(ResultSet resultSet) {
-         try {
-             // Создаем корневой JSON объект
-             JSONObject timetableJson = new JSONObject();
-             JSONObject timetableEntryJson = new JSONObject();
+                // Перед тем, как выйти, закрываем соединение с базой данных
+                conn.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-             // Создаем массив Sports внутри TimetableEntry
-             JSONArray sportsArray = new JSONArray();
+    private void exportToJson(ResultSet resultSet) {
+        try {
+            // Создаем корневой JSON объект
+            JSONObject timetableJson = new JSONObject();
 
-             while (resultSet.next()) {
-                 String sportType = resultSet.getString("sport_name");
-                 String groupName = resultSet.getString("group_name");
-                 String coachName = resultSet.getString("coach_name");
-                 String coachSurname = resultSet.getString("coach_surname");
+            // Создаем массив Sports
+            JSONArray sportsArray = new JSONArray();
 
-                 // Проверяем, существует ли уже Sport с таким Type
-                 JSONObject sportJson = findSportJson(sportsArray, sportType);
+            while (resultSet.next()) {
+                String sportType = resultSet.getString("sport_name");
+                String groupName = resultSet.getString("group_name");
+                String coachName = resultSet.getString("coach_name");
+                String coachSurname = resultSet.getString("coach_surname");
 
-                 if (sportJson == null) {
-                     // Если нет, создаем новый Sport
-                     sportJson = new JSONObject();
-                     sportJson.put("Type", sportType);
 
-                     // Создаем массив Groups внутри Sport
-                     JSONArray groupsArray = new JSONArray();
-                     sportJson.put("Groups", groupsArray);
+                // Проверяем, существует ли уже Sport с таким Type
+                JSONObject sportJson = findSportJson(sportsArray, sportType);
 
-                     // Добавляем Sport в массив Sports
-                     sportsArray.put(sportJson);
-                 }
+                if (sportJson == null) {
+                    // Если нет, создаем новый Sport
+                    sportJson = new JSONObject();
+                    sportJson.put("Type", sportType);
+                    
+                    // Добавляем Sport в массив Sports
+                    sportsArray.put(sportJson);
 
-                 // Создаем объект Group
-                 JSONObject groupJson = new JSONObject();
-                 groupJson.put("Name", groupName);
+                    // Создаем объект Group
+                    JSONObject groupJson = new JSONObject();
+                    groupJson.put("Name", groupName);
+                    
+                 // Добавляем Group в Sport
+                    sportJson.put("Group", groupJson);
 
-                 // Создаем массив Coaches внутри Group
-                 JSONArray coachesArray = new JSONArray();
-                 JSONObject coachJson = new JSONObject();
-                 coachJson.put("Name", coachName);
-                 coachJson.put("Surname", coachSurname);
-                 coachesArray.put(coachJson);
+                    // Создаем массив Coaches внутри Group
+                    JSONArray coachesArray = new JSONArray();
+                    JSONObject coachJson = new JSONObject();
+                    coachJson.put("Name", coachName);
+                    coachJson.put("Surname", coachSurname);
+                    coachesArray.put(coachJson);
 
-                 // Добавляем Group в массив Groups
-                 groupJson.put("Coaches", coachesArray);
+                    // Добавляем массив Coaches в Group
+                    groupJson.put("Coaches", coachesArray);
 
-                 // Добавляем Group в массив Groups внутри Sport
-                 sportJson.getJSONArray("Groups").put(groupJson);
-             }
+                } else {
+                    // Если Sport существует, получаем Group
+                    JSONObject groupJson = sportJson.getJSONObject("Group");
 
-             // Добавляем массив Sports внутри TimetableEntry
-             timetableEntryJson.put("Sports", sportsArray);
+                    // Проверяем, существует ли уже Group с таким Name
+                    if (!groupJson.getString("Name").equals(groupName)) {
+                        // Если нет, создаем новый Group
+                        JSONObject newGroupJson = new JSONObject();
+                        newGroupJson.put("Name", groupName);
 
-             // Добавляем TimetableEntry в корневой JSON объект
-             timetableJson.put("TimetableEntry", timetableEntryJson);
+                        // Создаем массив Coaches внутри Group
+                        JSONArray coachesArray = new JSONArray();
+                        JSONObject newCoachJson = new JSONObject();
+                        newCoachJson.put("Name", coachName);
+                        newCoachJson.put("Surname", coachSurname);
+                        coachesArray.put(newCoachJson);
 
-             // Преобразуем JSON в строку
-             String jsonString = timetableJson.toString(2);
-             
-          // Путь к файлу JSON
-             String jsonFilePath = "C:\\Users\\User\\Desktop\\exported_data.json";
+                        // Добавляем массив Coaches в Group
+                        newGroupJson.put("Coaches", coachesArray);
 
-             // Записываем строку JSON в файл
-             try (FileWriter jsonFile = new FileWriter(jsonFilePath)) {
-                 jsonFile.write(jsonString);
-                 System.out.println("Данные успешно выгружены в JSON файл.");
-             }
-         } catch (Exception e) {
-             e.printStackTrace();
-         }
-     }
+                        // Заменяем существующий Group новым в Sport
+                        sportJson.put("Group", newGroupJson);
+                    } else {
+                        // Если Group существует, получаем массив Coaches
+                        JSONArray coachesArray = groupJson.getJSONArray("Coaches");
 
-     private JSONObject findSportJson(JSONArray sportsArray, String sportType) throws JSONException {
-         for (int i = 0; i < sportsArray.length(); i++) {
-             JSONObject sportJson = sportsArray.getJSONObject(i);
-             if (sportJson.getString("Type").equals(sportType)) {
-                 return sportJson;
-             }
-         }
-         return null;
-     }
-	}
+                        // Создаем объект Coach
+                        JSONObject newCoachJson = new JSONObject();
+                        newCoachJson.put("Name", coachName);
+                        newCoachJson.put("Surname", coachSurname);
+
+                        // Добавляем нового Coach в массив Coaches
+                        coachesArray.put(newCoachJson);
+                    }
+                }
+            }
+
+            // Добавляем массив Sports в корневой JSON объект
+            timetableJson.put("Sports", sportsArray);
+
+            // Преобразуем JSON в строку
+            String jsonString = timetableJson.toString(2);
+
+            // Путь к файлу JSON
+            String jsonFilePath = "C:\\Users\\User\\Desktop\\exported_data.json";
+
+            // Записываем строку JSON в файл
+            try (FileWriter jsonFile = new FileWriter(jsonFilePath)) {
+                jsonFile.write(jsonString);
+                System.out.println("Данные успешно выгружены в JSON файл.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject findSportJson(JSONArray sportsArray, String sportType) throws JSONException {
+        for (int i = 0; i < sportsArray.length(); i++) {
+            JSONObject sportJson = sportsArray.getJSONObject(i);
+            if (sportJson.getString("Type").equals(sportType)) {
+                return sportJson;
+            }
+        }
+        return null;
+    }
+}
+

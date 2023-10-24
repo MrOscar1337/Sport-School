@@ -20,8 +20,6 @@ public class Timetable extends JFrame {
     private JTable table_1;
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    
-
     public Timetable() throws Exception {
         // Создаем планировщик задач
         scheduler = Executors.newScheduledThreadPool(1);
