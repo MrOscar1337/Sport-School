@@ -8,8 +8,8 @@ import javax.mail.internet.*;
 public class EmailSender {
 
     public static void Send() throws MessagingException, IOException {
-    	final String username = "tagirov2004@bk.ru";
-        final String password = "g7NxypTD0y7a6B1gPRzp";
+    	final String username = "tagirov@bk.ru";
+        final String password = "secretpass";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
