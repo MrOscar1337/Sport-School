@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import javax.activation.*;
 
 public class Timetable extends JFrame {
 
@@ -31,6 +32,7 @@ public class Timetable extends JFrame {
                 exportXML.exportToXml();
                 JsonExporter exportJSON = new JsonExporter();
                 exportJSON.exportToJson();
+                EmailSender.Send();
             } catch (Exception e) {
                 e.printStackTrace();
             }

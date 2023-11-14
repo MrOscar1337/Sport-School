@@ -53,7 +53,6 @@ public class JsonExporter {
                 String coachName = resultSet.getString("coach_name");
                 String coachSurname = resultSet.getString("coach_surname");
 
-
                 // Проверяем, существует ли уже Sport с таким Type
                 JSONObject sportJson = findSportJson(sportsArray, sportType);
 
@@ -61,16 +60,10 @@ public class JsonExporter {
                     // Если нет, создаем новый Sport
                     sportJson = new JSONObject();
                     sportJson.put("Type", sportType);
-                    
-                    // Добавляем Sport в массив Sports
-                    sportsArray.put(sportJson);
 
                     // Создаем объект Group
                     JSONObject groupJson = new JSONObject();
                     groupJson.put("Name", groupName);
-                    
-                 // Добавляем Group в Sport
-                    sportJson.put("Group", groupJson);
 
                     // Создаем массив Coaches внутри Group
                     JSONArray coachesArray = new JSONArray();
@@ -82,6 +75,11 @@ public class JsonExporter {
                     // Добавляем массив Coaches в Group
                     groupJson.put("Coaches", coachesArray);
 
+                    // Добавляем Group в Sport
+                    sportJson.put("Group", groupJson);
+
+                    // Добавляем Sport в массив Sports
+                    sportsArray.put(sportJson);
                 } else {
                     // Если Sport существует, получаем Group
                     JSONObject groupJson = sportJson.getJSONObject("Group");
@@ -148,4 +146,6 @@ public class JsonExporter {
         return null;
     }
 }
+
+
 
